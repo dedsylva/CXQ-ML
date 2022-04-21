@@ -18,13 +18,13 @@ How performant is one over the other? We will try to answer this by designing tw
 -------
 The datasets that will be used are:
  - MNIST (60k Images)
-  - http://yann.lecun.com/exdb/mnist/
+    - http://yann.lecun.com/exdb/mnist/
  - Bees and Ants taken from Imagenet (240 Images)
-  - https://download.pytorch.org/tutorial/hymenoptera data.zip
+    - https://download.pytorch.org/tutorial/hymenoptera data.zip
  - COVID-19 X-Ray (317 Images)
-  - https://www.kaggle.com/datasets/pranavraikokte/covid19-image-dataset
+    - https://www.kaggle.com/datasets/pranavraikokte/covid19-image-dataset
  - Blood Cells for Malaria prediction (27.5k Images) 
-  - https://www.kaggle.com/datasets/iarunava/cell-images-for-detecting-malaria
+    - https://www.kaggle.com/datasets/iarunava/cell-images-for-detecting-malaria
 
 
 ### Tools
