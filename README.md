@@ -8,9 +8,9 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 -------
 How performant is one over the other? We will try to answer this by designing two types of neural networks for each approach (Classical and Quantum). 
  - From scratch
-  - training neural network with no prior knowledge
+      - training neural network with no prior knowledge
  - Using Transfer Learning
-  - using knowledge with networks trained in Imagenet classification
+      - using knowledge with networks trained in Imagenet classification
 
 
 ### Datasets
@@ -39,14 +39,14 @@ The datasets that will be used are:
 
 #### TODO
 - MNIST Dataset
- - Classical []
- - Quantum []
+   - Classical []
+   - Quantum []
 - Bees and Ants Dataset
- - Classical []
- - Quantum []
+   - Classical []
+   - Quantum []
 - COVID-19 X-Rays Dataset
- - Classical []
- - Quantum []
+   - Classical []
+   - Quantum []
 - Malaria Blood Cells Dataset
- - Classical []
- - Quantum []
+   - Classical []
+   - Quantum []
