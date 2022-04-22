@@ -1,1 +1,6 @@
 .*.swp
+classical/scratch/__pycache__
+classical/transfered/__pycache__
+quantum/scratch/__pycache__
+quantum/transfered/__pycache__
+quantum/scratch/quanvolution
