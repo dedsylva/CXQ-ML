@@ -40,7 +40,7 @@ The datasets that will be used are:
 #### TODO
 - MNIST Dataset
    - Classical [X]
-   - Quantum []
+   - Quantum [X]
 - Bees and Ants Dataset
    - Classical []
    - Quantum []

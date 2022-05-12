@@ -8,7 +8,7 @@ from model import Model
 from database import Database
 import time
 
-#constants
+# Constants
 SHAPE = (28,28,1)
 OPT = 'rmsprop' #'adam'
 LOSS = 'categorical_crossentropy'
