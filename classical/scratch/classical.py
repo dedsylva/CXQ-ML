@@ -5,10 +5,10 @@
 # 10000 data to test
 
 import os
-from tkinter import Image
 from model import Mnist, Imagenet 
 from database import MNISTDB, IMAGENETDB 
 import time
+from sklearn.utils import shuffle
 
 # Constants
 MNIST_SHAPE = (28,28,1)
@@ -70,6 +70,7 @@ if IMAGENET:
   print("*** IMAGENET (ANTS AND BEES) DATASET CHOSEN ***")
   db = IMAGENETDB()
   X_train, Y_train, X_test, Y_test = db.get_data()
+  X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
 
   print("Building Architecture of Neural Network...")
   IMG = Imagenet(IMAGENET_SHAPE, OPT, LOSS, METRICS)

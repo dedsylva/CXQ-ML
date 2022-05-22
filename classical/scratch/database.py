@@ -5,7 +5,7 @@ from PIL import Image
 from pathlib import Path
 import numpy as np
 
-class MNISTDB():
+class MNISTDB:
   def __init__(self):
     pass
 
@@ -24,7 +24,7 @@ class MNISTDB():
 
     return X_train, Y_train, X_test, Y_test
 
-class IMAGENETDB():
+class IMAGENETDB:
   """
   labels: 1 == ants, 0 == bees
   """

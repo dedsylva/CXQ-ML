@@ -9,8 +9,8 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 set MODEL=IMAGENET && python classical/scratch/classical.py
 set MODEL=MNIST && python classical/scratch/classical.py
 
-# quantum networks
-set MODEL=MNIST && python quantum/scratch/qml.py
+# quantum networks (prerocess=1 passes through first quantum layer)
+set MODEL=IMAGENET && set PREPROCESS=1 && python quantum/scratch/qml.py
 ```
 
 ## Objective

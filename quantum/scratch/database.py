@@ -3,25 +3,18 @@ from keras.datasets import mnist
 from keras.utils import to_categorical
 import tensorflow as tf
 from pennylane import numpy as np
+from preprocess import prep_data 
+from PIL import Image
+from pathlib import Path
 
-class Database():
-  def __init__(self, gpus=False):
-    if gpus:
-      gpus = tf.config.experimental.list_physical_devices('GPU')
-      try:
-        # Currently, memory growth needs to be the same across GPUs
-        for gpu in gpus:
-          tf.config.experimental.set_memory_growth(gpu, True)
-        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-      except RuntimeError as e:
-        # Memory growth must be set before GPUs have been initialized
-        print(e)
-    else:
-      pass
+class MNISTDB:
+  def __init__(self, SAVE_PATH, shape, prefix):
+    self.SAVE_PATH = SAVE_PATH
+    self.shape = shape
+    self.prefix= prefix 
 
 
-  def get_data(self, size):
+  def get_data(self, size, pp):
 
     #load data
     (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
@@ -46,4 +39,74 @@ class Database():
     test_images = np.array(test_images[..., tf.newaxis], requires_grad=False)
 
 
-    return train_images, train_labels, test_images, test_labels 
+    if pp is not None and pp != '0': 
+      prep_data(train_images, test_images, self.SAVE_PATH, self.prefix, self.shape)
+
+    # Load pre-processed images
+
+    q_train_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_train_images.npy")
+    q_test_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_test_images.npy")
+
+    return q_train_images, train_labels, q_test_images, test_labels
+
+
+class IMAGENETDB:
+  """
+  labels: 1 == ants, 0 == bees
+  """
+  def __init__(self, SAVE_PATH, shape, prefix):
+    self.SAVE_PATH = SAVE_PATH
+    self.shape = shape
+    self.prefix = prefix 
+
+  def get_data(self, size, pp):
+    X_train, Y_train = [], []
+    X_test, Y_test = [], []
+
+    ## TRAINING DATA
+    a = Path(r'./datasets/hymenoptera_data\train\ants')
+    b = Path(r'./datasets/hymenoptera_data\train\bees')
+
+    thresh = 200
+    fn = lambda x : 255 if x > thresh else 0
+    for i in a.iterdir():
+
+      im = Image.open(i).resize((self.shape[0:2])).convert('L')
+      im = np.array(im).reshape((self.shape[0], self.shape[1], 1)).astype('float32')/255 
+      X_train.append(im)
+      Y_train.append(1)
+    
+
+    for i in b.iterdir():
+      im = Image.open(i).resize((self.shape[0:2])).convert('L')
+      im = np.array(im).reshape((self.shape[0], self.shape[1], 1)).astype('float32')/255 
+      X_train.append(im)
+      Y_train.append(0)
+
+
+    ## TEST DATA
+    a = Path(r'./datasets/hymenoptera_data\val\ants')
+    b = Path(r'./datasets/hymenoptera_data\val\bees')
+
+    for i in a.iterdir():
+      im = Image.open(i).resize((self.shape[0:2])).convert('L')
+      im = np.array(im).reshape((self.shape[0], self.shape[1], 1)).astype('float32')/255 
+      X_test.append(im)
+      Y_test.append(1)
+    
+
+    for i in b.iterdir():
+      im = Image.open(i).resize((self.shape[0:2])).convert('L')
+      im = np.array(im).reshape((self.shape[0], self.shape[1], 1)).astype('float32')/255 
+      X_test.append(im)
+      Y_test.append(0)
+ 
+
+    if pp is not None and pp != '0': 
+      prep_data(np.array(X_train), np.array(X_test), self.SAVE_PATH, self.prefix, self.shape)
+
+    # Load pre-processed images
+    q_train_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_train_images.npy")
+    q_test_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_test_images.npy")
+
+    return q_train_images, np.array(Y_train), q_test_images, np.array(Y_test)
