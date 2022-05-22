@@ -3,6 +3,16 @@
 -------
 A comparison of Classical and Quantum Machine Learning Approach for Neural Networks in <b>binary image classification</b>.
 
+## Running
+```bash
+# classical networks
+set MODEL=IMAGENET && python classical/scratch/classical.py
+set MODEL=MNIST && python classical/scratch/classical.py
+
+# quantum networks
+set MODEL=MNIST && python quantum/scratch/qml.py
+```
+
 ## Objective
 
 -------
@@ -12,7 +22,6 @@ How performant is one over the other? We will try to answer this by designing tw
  - Using Transfer Learning
       - using knowledge with networks trained in Imagenet classification
 
-
 ### Datasets
 
 -------
@@ -20,7 +29,7 @@ The datasets that will be used are:
  - MNIST (60k Images)
     - http://yann.lecun.com/exdb/mnist/
  - Bees and Ants taken from Imagenet (240 Images)
-    - https://download.pytorch.org/tutorial/hymenoptera data.zip
+    - https://download.pytorch.org/tutorial/hymenoptera_data.zip
  - COVID-19 X-Ray (317 Images)
     - https://www.kaggle.com/datasets/pranavraikokte/covid19-image-dataset
  - Blood Cells for Malaria prediction (27.5k Images) 
@@ -42,7 +51,7 @@ The datasets that will be used are:
    - Classical [X]
    - Quantum [X]
 - Bees and Ants Dataset
-   - Classical []
+   - Classical [X]
    - Quantum []
 - COVID-19 X-Rays Dataset
    - Classical []

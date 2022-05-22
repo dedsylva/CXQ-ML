@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 from model import QuantumModel 
 from database import Database
@@ -19,7 +20,7 @@ BATCH = 64
 EPOCHS = 5 
 
 RANDOM_LAYERS = 1    # Number of random layers
-SIZE = 100
+SIZE = -1 
 SAVE_PATH = "quanvolution/" # Data saving folder
 PREPROCESS = True           # If False, skip quantum processing and load data from SAVE_PATH
 N_WIRES = 4
@@ -76,23 +77,28 @@ def quanv(image):
 
 # Pre-process Image on Quanvolutional Layer 
 
-q_train_images = []
-print("Quantum pre-processing of train images:")
-for idx, img in enumerate(X_train):
-  print("{}/{}        ".format(idx + 1, SIZE), end="\r")
-  q_train_images.append(quanv(img))
-q_train_images = np.asarray(q_train_images)
+pp = os.environ.get('PREPROCESS')
+if SIZE == -1:
+  SIZE = 600000
 
-q_test_images = []
-print("\nQuantum pre-processing of test images:")
-for idx, img in enumerate(X_test):
-  print("{}/{}        ".format(idx + 1, SIZE), end="\r")
-  q_test_images.append(quanv(img))
-q_test_images = np.asarray(q_test_images)
+if pp is None or pp == '0':
+  q_train_images = []
+  print("Quantum pre-processing of train images:")
+  for idx, img in enumerate(X_train):
+    print("{}/{}        ".format(idx + 1, SIZE), end="\r")
+    q_train_images.append(quanv(img))
+  q_train_images = np.asarray(q_train_images)
 
-# Save pre-processed images
-np.save(SAVE_PATH + "q_train_images.npy", q_train_images)
-np.save(SAVE_PATH + "q_test_images.npy", q_test_images)
+  q_test_images = []
+  print("\nQuantum pre-processing of test images:")
+  for idx, img in enumerate(X_test):
+    print("{}/{}        ".format(idx + 1, SIZE), end="\r")
+    q_test_images.append(quanv(img))
+  q_test_images = np.asarray(q_test_images)
+
+  # Save pre-processed images
+  np.save(SAVE_PATH + "q_train_images.npy", q_train_images)
+  np.save(SAVE_PATH + "q_test_images.npy", q_test_images)
 
 
 # Load pre-processed images
@@ -162,8 +168,8 @@ loss, acc = c_model.evaluate(X_test, Y_test)
 time.sleep(2)
 
 print("\n\n\n***** ACCURACY TIME *****\n\n\n")
-print(f'Printing Accuracy of Quantum Neural Network: {q_acc}')
-print(f'Printing Accuracy of Classical Neural Network: {acc}')
+print(f'Accuracy of Quantum Neural Network: {q_acc}')
+print(f'Accuracy of Classical Neural Network: {acc}')
 
 
 # Classical neural network without quantum Layer

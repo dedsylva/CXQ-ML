@@ -4,38 +4,91 @@
 # 60000 data to train
 # 10000 data to test
 
-from model import Model
-from database import Database
+import os
+from tkinter import Image
+from model import Mnist, Imagenet 
+from database import MNISTDB, IMAGENETDB 
 import time
 
 # Constants
-SHAPE = (28,28,1)
+MNIST_SHAPE = (28,28,1)
+IMAGENET_SHAPE = (500,500,1)
 OPT = 'rmsprop' #'adam'
 LOSS = 'categorical_crossentropy'
 METRICS = ['accuracy']
-BATCH = 64
+BATCH = 32  
 EPOCHS = 5 
 
-db = Database()
-X_train, Y_train, X_test, Y_test = db.get_data()
+if __name__ == '__main__':
+  AVAILABLE_MODELS = ['MNIST, IMAGENET']
+
+  MODEL = os.environ.get('MODEL').strip()
+  MNIST, IMAGENET = False, False
+
+  if MODEL is None:
+    raise ValueError(f'Model parameter is required and can\'t be {MODEL}')
+
+  if(MODEL == 'MNIST'):
+    MNIST=True
+  
+  elif(MODEL == 'IMAGENET'):
+    IMAGENET=True
+  
+  else:
+    raise ValueError(f'Wrong model provided. Got {MODEL} but expected {AVAILABLE_MODELS[:]} ')
+
+""" MNIST DATASET """
+if MNIST:
+  print("*** MNIST DATASET CHOSEN ***")
+
+  db = MNISTDB()
+  X_train, Y_train, X_test, Y_test = db.get_data()
+
+  print("Building Architecture of Neural Network...")
+  NN = Mnist(MNIST_SHAPE, OPT, LOSS, METRICS)
+
+  model = NN.build_model()
+  print("- Model Successfully built. ")
+
+  time.sleep(1)
+  print("Training Neural Network")
+  Results = NN.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
 
 
-print("Building Architecture of Neural Network...")
-NN = Model(SHAPE, OPT, LOSS, METRICS)
+  print("Neural Network Successfully Trained!")
+  time.sleep(1)
 
-model = NN.build_model()
-print("- Model Successfully built. ")
+  print("Evaluating model ... ")
+  loss, acc = model.evaluate(X_test, Y_test)
 
-time.sleep(1)
-print("Training Neural Network")
-Results = NN.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+  time.sleep(1)
+  print(f'Accuracy of Neural Network: {acc}')
 
 
-print("Neural Network Successfully Trained!")
-time.sleep(1)
+""" IMAGENET DATASET (ANTS AND BEES) """
+if IMAGENET:
+  print("*** IMAGENET (ANTS AND BEES) DATASET CHOSEN ***")
+  db = IMAGENETDB()
+  X_train, Y_train, X_test, Y_test = db.get_data()
 
-print("Evaluating model ... ")
-loss, acc = model.evaluate(X_test, Y_test)
+  print("Building Architecture of Neural Network...")
+  IMG = Imagenet(IMAGENET_SHAPE, OPT, LOSS, METRICS)
 
-time.sleep(1)
-print(f'Printing Accuracy of Neural Network: {acc}')
+  model = IMG.build_model()
+  print("- Model Successfully built. ")
+
+  time.sleep(1)
+  print("Training Neural Network")
+  Results = IMG.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+
+
+  print("Neural Network Successfully Trained!")
+  time.sleep(1)
+
+  print("Evaluating model ... ")
+  loss, acc = model.evaluate(X_test, Y_test)
+
+  time.sleep(1)
+  print(f'Accuracy of Neural Network: {acc}')
+
+
