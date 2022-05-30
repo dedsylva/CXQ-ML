@@ -110,3 +110,82 @@ class IMAGENETDB:
     q_test_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_test_images.npy")
 
     return q_train_images, np.array(Y_train), q_test_images, np.array(Y_test)
+
+
+class COVIDB:
+  """
+  labels: 0 == covid, 1 == normal, 2 == pneumonia
+  """
+  def __init__(self, SAVE_PATH, shape, prefix):
+    self.SAVE_PATH = SAVE_PATH
+    self.shape = shape
+    self.prefix = prefix 
+
+  def get_data(self, size, pp):
+    X_train, Y_train = [], []
+    X_test, Y_test = [], []
+
+    ## TRAINING DATA
+    a = Path(r'./datasets/Covid19/train/Covid')
+    b = Path(r'./datasets/Covid19/train/Normal')
+    c = Path(r'./datasets/Covid19/train/ViralPneumonia')
+
+    for i in a.iterdir():
+
+      im = Image.open(i).resize((self.shape[0], self.shape[1])).convert('L')
+      im = np.array(im).reshape(self.shape).astype('float32')/255 
+      X_train.append(im)
+      Y_train.append(0)
+    
+
+    for i in b.iterdir():
+      im = Image.open(i).resize((self.shape[0], self.shape[1])).convert('L')
+      im = np.array(im).reshape(self.shape).astype('float32')/255 
+      X_train.append(im)
+      Y_train.append(1)
+
+
+    for i in c.iterdir():
+      im = Image.open(i).resize((self.shape[0], self.shape[1])).convert('L')
+      im = np.array(im).reshape(self.shape).astype('float32')/255 
+      X_train.append(im)
+      Y_train.append(2)
+
+
+    ## TEST DATA
+    a = Path(r'./datasets/Covid19/test/Covid')
+    b = Path(r'./datasets/Covid19/test/Normal')
+    c = Path(r'./datasets/Covid19/test/ViralPneumonia')
+
+    for i in a.iterdir():
+      im = Image.open(i).resize((self.shape[0], self.shape[1])).convert('L')
+      im = np.array(im).reshape(self.shape).astype('float32')/255 
+      X_test.append(im)
+      Y_test.append(0)
+    
+
+    for i in b.iterdir():
+      im = Image.open(i).resize((self.shape[0], self.shape[1])).convert('L')
+      im = np.array(im).reshape(self.shape).astype('float32')/255 
+      X_test.append(im)
+      Y_test.append(1)
+ 
+
+    for i in c.iterdir():
+      im = Image.open(i).resize((self.shape[0], self.shape[1])).convert('L')
+      im = np.array(im).reshape(self.shape).astype('float32')/255 
+      X_test.append(im)
+      Y_test.append(2)
+ 
+    Y_train =  to_categorical(Y_train)
+    Y_test =   to_categorical(Y_test)
+ 
+    if pp is not None and pp != '0': 
+      prep_data(np.array(X_train), np.array(X_test), self.SAVE_PATH, self.prefix, self.shape)
+
+    # Load pre-processed images
+    q_train_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_train_images.npy")
+    q_test_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_test_images.npy")
+
+    return q_train_images, Y_train, q_test_images, Y_test
+

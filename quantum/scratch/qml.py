@@ -1,6 +1,6 @@
 import os
-from model import Mnist, Imagenet 
-from database import MNISTDB, IMAGENETDB 
+from model import Mnist, Imagenet, Covid 
+from database import MNISTDB, IMAGENETDB, COVIDB 
 import time
 from sklearn.utils import shuffle
 
@@ -9,6 +9,7 @@ if __name__ == '__main__':
   # Constants
   MNIST_SHAPE = (28,28,4)
   IMAGENET_SHAPE = (100,100,4)
+  COVID_SHAPE = (250,250,1)
   OPT = 'rmsprop' #'adam'
   LOSS = 'categorical_crossentropy'
   METRICS = ['accuracy']
@@ -21,11 +22,10 @@ if __name__ == '__main__':
   N_WIRES = 4
 
 
-
-  AVAILABLE_MODELS = ['MNIST, IMAGENET']
+  AVAILABLE_MODELS = ['MNIST, IMAGENET', 'COVID']
 
   MODEL = os.environ.get('MODEL').strip()
-  MNIST, IMAGENET = False, False
+  MNIST, IMAGENET, COVID = False, False, False
 
   if MODEL is None:
     raise ValueError(f'Model parameter is required and can\'t be {MODEL}')
@@ -35,6 +35,9 @@ if __name__ == '__main__':
   
   elif(MODEL == 'IMAGENET'):
     IMAGENET=True
+  
+  elif(MODEL == 'COVID'):
+    COVID=True
   
   else:
     raise ValueError(f'Wrong model provided. Got {MODEL} but expected {AVAILABLE_MODELS[:]} ')
@@ -90,6 +93,40 @@ if IMAGENET:
   time.sleep(1)
   print("Training Neural Network")
   Results = IMG.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+
+
+  print("Neural Network Successfully Trained!")
+  time.sleep(1)
+
+  print("Evaluating model ... ")
+  loss, acc = model.evaluate(X_test, Y_test)
+
+  time.sleep(1)
+  print(f'Accuracy of Neural Network: {acc}')
+
+
+""" COVID-19 DATASET  """
+if COVID:
+  print("*** COVID-19 DATASET CHOSEN ***")
+
+  db = COVIDB(SAVE_PATH, COVID_SHAPE, prefix='covid')
+  pp = os.environ.get('PREPROCESS').strip()
+  SIZE = os.environ.get('SIZE')
+  SIZE = -1 if SIZE is None else int(SIZE)
+  X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
+
+  exit(0)
+  X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
+
+  print("Building Architecture of Neural Network...")
+  CV = Covid(COVID_SHAPE, OPT, LOSS, METRICS)
+
+  model = CV.build_model()
+  print("- Model Successfully built. ")
+
+  time.sleep(1)
+  print("Training Neural Network")
+  Results = CV.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
 
 
   print("Neural Network Successfully Trained!")

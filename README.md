@@ -6,11 +6,14 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 ## Running
 ```bash
 # classical networks
-set MODEL=IMAGENET && python classical/scratch/classical.py
 set MODEL=MNIST && python classical/scratch/classical.py
+set MODEL=IMAGENET && python classical/scratch/classical.py
+set MODEL=COVID && python classical/scratch/classical.py
 
 # quantum networks (prerocess=1 passes through first quantum layer)
+set MODEL=MNIST && set PREPROCESS=1 && python quantum/scratch/qml.py
 set MODEL=IMAGENET && set PREPROCESS=1 && python quantum/scratch/qml.py
+set MODEL=COVID && set PREPROCESS=1 && python quantum/scratch/qml.py
 ```
 
 ## Objective
@@ -52,7 +55,7 @@ The datasets that will be used are:
    - Quantum [X]
 - Bees and Ants Dataset
    - Classical [X]
-   - Quantum []
+   - Quantum [X]
 - COVID-19 X-Rays Dataset
    - Classical []
    - Quantum []
