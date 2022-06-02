@@ -115,7 +115,6 @@ if COVID:
   SIZE = -1 if SIZE is None else int(SIZE)
   X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
 
-  exit(0)
   X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
 
   print("Building Architecture of Neural Network...")

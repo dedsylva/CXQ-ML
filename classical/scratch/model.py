@@ -140,7 +140,7 @@ class Covid():
 		#Classification part
 		model.add(layers.Flatten())
 		# model.add(layers.Dense(128, activation='relu'))
-		model.add(layers.Dense(32, activation='relu'))
+		# model.add(layers.Dense(32, activation='relu'))
 		model.add(layers.Dense(16, activation='relu'))
 		model.add(layers.Dense(3, activation='softmax'))
 
