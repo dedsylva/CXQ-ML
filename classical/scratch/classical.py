@@ -6,42 +6,56 @@
 
 import os
 from tkinter.tix import IMAGE
-from model import Mnist, Imagenet, Covid 
-from database import MNISTDB, IMAGENETDB, COVIDB 
+from model import Mnist, Imagenet, Covid, Malaria 
+from database import MNISTDB, IMAGENETDB, COVIDB, MALARIADB
 import time
 from sklearn.utils import shuffle
 
-# Constants
-MNIST_SHAPE = (28,28,1)
-IMAGENET_SHAPE = (500,500,1)
-COVID_SHAPE = (500,500,1)
-OPT = 'rmsprop' #'adam'
-LOSS = 'categorical_crossentropy'
-METRICS = ['accuracy']
-BATCH = 32  
-EPOCHS = 5 
-
 if __name__ == '__main__':
 
-  AVAILABLE_MODELS = ['MNIST, IMAGENET', 'COVID']
+  # Constants
+  MNIST_SHAPE = (28,28,4)
+  IMAGENET_SHAPE = (100,100,4)
+  COVID_SHAPE = (250,250,1)
+  MALARIA_SHAPE = (250, 250, 3)
+  OPT = 'rmsprop' #'adam'
+  LOSS = 'categorical_crossentropy'
+  METRICS = ['accuracy', 'AUC']
+  BATCH = 64
+  EPOCHS = 5 
+
+  RANDOM_LAYERS = 1    # Number of random layers
+  SIZE = -1 
+  SAVE_PATH = "quantum/scratch/quanvolution/" # Data saving folder
+  N_WIRES = 4
+
+  AVAILABLE_MODELS = ['MNIST, IMAGENET', 'COVID', 'MALARIA']
 
   MODEL = os.environ.get('MODEL').strip()
   MNIST, IMAGENET, COVID = False, False, False
 
   if MODEL is None:
     raise ValueError(f'Model parameter is required and can\'t be {MODEL}')
+  
+  if MODEL not in AVAILABLE_MODELS:
+    raise ValueError(f'Wrong model provided. Got {MODEL} but expected {AVAILABLE_MODELS[:]} ')
 
   if(MODEL == 'MNIST'):
     MNIST=True
   
   elif(MODEL == 'IMAGENET'):
     IMAGENET=True
-
+  
   elif(MODEL == 'COVID'):
     COVID=True
+
+  elif(MODEL == 'MALARIA'):
+    MALARIA=True
   
   else:
     raise ValueError(f'Wrong model provided. Got {MODEL} but expected {AVAILABLE_MODELS[:]} ')
+
+
 
 """ MNIST DATASET """
 if MNIST:
@@ -77,6 +91,7 @@ if IMAGENET:
   db = IMAGENETDB(SIZE=IMAGENET_SHAPE)
   X_train, Y_train, X_test, Y_test = db.get_data()
   X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
+  X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
 
   print("Building Architecture of Neural Network...")
   IMG = Imagenet(IMAGENET_SHAPE, OPT, LOSS, METRICS)
@@ -106,6 +121,7 @@ if COVID:
   X_train, Y_train, X_test, Y_test = db.get_data()
 
   X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
+  X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
 
   print("Building Architecture of Neural Network...")
   CV = Covid(COVID_SHAPE, OPT, LOSS, METRICS)
@@ -127,3 +143,42 @@ if COVID:
   time.sleep(1)
   print(f'Accuracy of Neural Network: {acc}')
 
+
+""" MALARIA DATASET  """
+if MALARIA:
+  print("*** MALARIA DATASET CHOSEN ***")
+  pt = os.environ.get('PREPROCESS')
+  pt = pt.strip() if pt is not None else pt
+  prefix = 'malaria'+pt if pt is not None else 'malaria'
+
+  db = MALARIADB(SAVE_PATH, MALARIA_SHAPE, prefix=prefix)
+  SIZE = os.environ.get('SIZE')
+  if SIZE is None:
+    SIZE = -1
+  elif len(SIZE) == 1:
+    SIZE = int(SIZE)
+  elif len(SIZE.split(',')) == 2:
+    SIZE = (int(SIZE.split(',')[0]), int(SIZE.split(',')[1])) # large datasets we do preprocessing in batches
+  else:
+    raise ValueError(f'SIZE takes up to 2 arguments, but got {SIZE}')
+
+  X_train, Y_train, X_test, Y_test = db.get_data(SIZE)
+
+  print("Building Architecture of Neural Network...")
+  M = Malaria(MALARIA_SHAPE, OPT, LOSS, METRICS)
+
+  model = M.build_model()
+  print("- Model Successfully built. ")
+
+  time.sleep(1)
+  print("Training Neural Network")
+  Results = M.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+
+  print("Neural Network Successfully Trained!")
+  time.sleep(1)
+
+  print("Evaluating model ... ")
+  loss, acc, auc = model.evaluate(X_test, Y_test)
+
+  time.sleep(1)
+  print(f'Accuracy: {acc}, AUC: {auc}')

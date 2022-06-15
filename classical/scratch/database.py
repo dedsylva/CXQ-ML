@@ -142,3 +142,60 @@ class COVIDB:
     Y_test =   to_categorical(Y_test)
  
     return np.array(X_train), Y_train, np.array(X_test), Y_test
+
+
+class MALARIADB:
+  """
+  labels: # 1 is parasitized, 0 is uninfected 
+  """
+  def __init__(self, SAVE_PATH, shape, prefix):
+    self.SAVE_PATH = SAVE_PATH
+    self.shape = shape
+    self.prefix = prefix 
+
+  def get_data(self, size):
+    data = []
+    self.size = size if len(size) == 2 else (0,9999999) 
+
+    ## TRAINING DATA
+    a = Path(r'./datasets/Malaria/Parasitized')
+    b = Path(r'./datasets/Malaria/Uninfected')
+
+    for i,d in enumerate(a.iterdir()):
+      if d.is_file() and  str(d).endswith('png'):
+        if i < self.size[0]:
+          continue
+        elif i >= self.size[1]:
+          break
+        else:
+          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = np.array(im).reshape(self.shape).astype('float32')/255 
+          data.append([im,1])
+
+    for i,d in enumerate(b.iterdir()):
+      if d.is_file() and  str(d).endswith('png'):
+        if i < self.size[0]:
+          continue
+        elif i >= self.size[1]:
+          break
+        else:
+          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = np.array(im).reshape(self.shape).astype('float32')/255 
+          data.append([im,0])
+
+    #shuffle
+    data = np.array(data)
+    np.random.shuffle(data)
+
+    ## TEST DATA
+    test_size = int(len(data)*0.9)
+
+    X_train = np.stack(data[:test_size,0], axis=0)
+    X_test  = np.stack(data[test_size:,0], axis=0) 
+
+    Y_train = np.stack(data[:test_size,1], axis=0)
+    Y_test  = np.stack(data[test_size:,1], axis=0)
+
+    del(data)
+
+    return X_train, Y_train, X_test, Y_test

@@ -189,3 +189,69 @@ class COVIDB:
 
     return q_train_images, Y_train, q_test_images, Y_test
 
+
+class MALARIADB:
+  """
+  labels: # 1 is parasitized, 0 is uninfected 
+  """
+  def __init__(self, SAVE_PATH, shape, prefix):
+    self.SAVE_PATH = SAVE_PATH
+    self.shape = shape
+    self.prefix = prefix 
+
+  def get_data(self, size, pp):
+    data = []
+    self.size = size if len(size) == 2 else (0,9999999) 
+
+    ## TRAINING DATA
+    a = Path(r'./datasets/Malaria/Parasitized')
+    b = Path(r'./datasets/Malaria/Uninfected')
+
+    print(self.size, self.shape)
+
+    for i,d in enumerate(a.iterdir()):
+      if d.is_file() and  str(d).endswith('png'):
+        if i < self.size[0]:
+          continue
+        elif i >= self.size[1]:
+          break
+        else:
+          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = np.array(im).reshape(self.shape).astype('float32')/255 
+          data.append([im,1])
+
+    for i,d in enumerate(b.iterdir()):
+      if d.is_file() and  str(d).endswith('png'):
+        if i < self.size[0]:
+          continue
+        elif i >= self.size[1]:
+          break
+        else:
+          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = np.array(im).reshape(self.shape).astype('float32')/255 
+          data.append([im,0])
+
+    #shuffle
+    data = np.array(data)
+    np.random.shuffle(data)
+
+    ## TEST DATA
+    test_size = int(len(data)*0.9)
+    X_train = np.stack(data[:test_size,0], axis=0)
+    X_test  = np.stack(data[test_size:,0], axis=0) 
+
+    Y_train = np.stack(data[:test_size,1], axis=0)
+    Y_test  = np.stack(data[test_size:,1], axis=0)
+
+    del(data)
+
+    if pp is not None and pp != '0': 
+      prep_data(np.array(X_train), np.array(X_test), self.SAVE_PATH, self.prefix, self.shape)
+
+    # Load pre-processed images
+    q_train_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_train_images.npy")
+    q_test_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_test_images.npy")
+
+    return q_train_images, Y_train, q_test_images, Y_test
+
+
