@@ -25,7 +25,7 @@ How performant is one over the other? We will try to answer this by designing tw
  - From scratch
       - training neural network with no prior knowledge
  - Using Transfer Learning
-      - <del>using knowledge with networks trained in Imagenet classification</del> no longer necessary, the accuuracy is already good from scratch for these examples
+      - <del>using knowledge with networks trained in Imagenet classification</del> no longer necessary, the accuracy is already good from scratch for these examples
 
 ### Datasets
 
