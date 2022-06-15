@@ -59,8 +59,8 @@ The datasets that will be used are:
    - Classical [X]
    - Quantum [X]
 - COVID-19 X-Rays Dataset
-   - Classical []
-   - Quantum []
+   - Classical [X]
+   - Quantum [X]
 - Malaria Blood Cells Dataset
-   - Classical []
-   - Quantum []
+   - Classical [X]
+   - Quantum [X]
