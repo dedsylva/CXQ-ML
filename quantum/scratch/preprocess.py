@@ -16,16 +16,43 @@ RANDOM_LAYERS=1
 dev = qml.device("default.qubit", wires=N_WIRES)
 
 # Random circuit parameters
-rand_params = np.random.uniform(high=2 * np.pi, size=(RANDOM_LAYERS, 4))
+# rand_params = np.random.uniform(high=2 * np.pi, size=(RANDOM_LAYERS, 4))
+
+# Quantum Circuit Ansatz
+@qml.qnode(dev)
+def layer(phi):
+  qml.Hadamard(phi[0])
+  qml.Hadamard(phi[2])
+
+  qml.CNOT(wires=[phi[0],phi[1]])
+  qml.CNOT(wires=[phi[2],phi[3]])
+
+  qml.Hadamard(phi[1])
+  qml.Hadamard(phi[3])
+
 
 @qml.qnode(dev)
 def circuit(phi ):
   # Encoding of 4 classical input values
   for j in range(4):
     qml.RY(np.pi * phi[j], wires=j)
+  
+  for l in range(5):
+    # layer(phi)
+    qml.Hadamard(0)
+    qml.Hadamard(2)
+
+    qml.CNOT(wires=[0,1])
+    qml.CNOT(wires=[2,3])
+
+    qml.Hadamard(1)
+    qml.Hadamard(3)
+
+
 
   # Random quantum circuit
-  RandomLayers(rand_params, wires=list(range(4)))
+  # RandomLayers(rand_params, wires=list(range(4)))
+
 
   # Measurement producing 4 classical output values
   return [qml.expval(qml.PauliZ(j)) for j in range(4)]
@@ -54,21 +81,29 @@ def quanv(image, shape):
 
 # Pre-process Image on Quanvolutional Layer 
 
-def prep_data(X_train, X_test, SAVE_PATH, PREFIX, SHAPE):
+def prep_data(X_train, X_test, SAVE_PATH, PREFIX, SHAPE, SAVE=True, LIMIT=-1):
+  pause = True if LIMIT != -1 else False
 
   q_train_images = []
   print("Quantum pre-processing of train images:")
   for idx, img in enumerate(tqdm(X_train)):
     q_train_images.append(quanv(img, SHAPE))
+    if pause and idx >= LIMIT:
+      break
   q_train_images = np.asarray(q_train_images)
 
   q_test_images = []
   print("\nQuantum pre-processing of test images:")
   for idx, img in enumerate(tqdm(X_test)):
     q_test_images.append(quanv(img, SHAPE))
+    if pause and idx >= LIMIT:
+      break
   q_test_images = np.asarray(q_test_images)
 
   # Save pre-processed images
-  np.save(SAVE_PATH + f"{PREFIX}_q_train_images.npy", q_train_images)
-  np.save(SAVE_PATH + f"{PREFIX}_q_test_images.npy", q_test_images)
+  if SAVE:
+    np.save(SAVE_PATH + f"{PREFIX}_q_train_images.npy", q_train_images)
+    np.save(SAVE_PATH + f"{PREFIX}_q_test_images.npy", q_test_images)
+  else:
+    return q_train_images, q_test_images
 

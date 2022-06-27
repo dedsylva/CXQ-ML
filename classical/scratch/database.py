@@ -155,7 +155,12 @@ class MALARIADB:
 
   def get_data(self, size):
     data = []
-    self.size = size if len(size) == 2 else (0,9999999) 
+    if type(size) == int:
+      self.size = size 
+    elif len(size) == 2:
+      self.size = size 
+    else:
+      self.size = (0,9999999) 
 
     ## TRAINING DATA
     a = Path(r'./datasets/Malaria/Parasitized')
@@ -168,7 +173,7 @@ class MALARIADB:
         elif i >= self.size[1]:
           break
         else:
-          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = Image.open(d).resize((self.shape[0], self.shape[1])).convert('L')
           im = np.array(im).reshape(self.shape).astype('float32')/255 
           data.append([im,1])
 
@@ -179,7 +184,7 @@ class MALARIADB:
         elif i >= self.size[1]:
           break
         else:
-          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = Image.open(d).resize((self.shape[0], self.shape[1])).convert('L')
           im = np.array(im).reshape(self.shape).astype('float32')/255 
           data.append([im,0])
 

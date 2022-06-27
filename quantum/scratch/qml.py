@@ -9,8 +9,8 @@ if __name__ == '__main__':
   # Constants
   MNIST_SHAPE = (28,28,4)
   IMAGENET_SHAPE = (100,100,4)
-  COVID_SHAPE = (250,250,3)
-  MALARIA_SHAPE = (250, 250, 3)
+  COVID_SHAPE = (100,100,1)
+  MALARIA_SHAPE = (100, 100, 1)
   OPT = 'rmsprop' #'adam'
   LOSS = 'categorical_crossentropy'
   METRICS = ['accuracy', 'AUC']
@@ -23,10 +23,10 @@ if __name__ == '__main__':
   N_WIRES = 4
 
 
-  AVAILABLE_MODELS = ['MNIST, IMAGENET', 'COVID', 'MALARIA']
+  AVAILABLE_MODELS = ['MNIST', 'IMAGENET', 'COVID', 'MALARIA']
 
   MODEL = os.environ.get('MODEL').strip()
-  MNIST, IMAGENET, COVID = False, False, False
+  MNIST, IMAGENET, COVID, MALARIA = False, False, False, False
 
   if MODEL is None:
     raise ValueError(f'Model parameter is required and can\'t be {MODEL}')
@@ -149,7 +149,7 @@ if COVID:
 """ MALARIA DATASET  """
 if MALARIA:
   print("*** MALARIA DATASET CHOSEN ***")
-  pt = os.environ.get('PREPROCESS').strip()
+  pt = os.environ.get('pt').strip()
   prefix = 'malaria'+pt if pt is not None else 'malaria'
 
   db = MALARIADB(SAVE_PATH, MALARIA_SHAPE, prefix=prefix)

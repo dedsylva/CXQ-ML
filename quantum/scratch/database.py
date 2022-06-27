@@ -199,6 +199,8 @@ class MALARIADB:
     self.shape = shape
     self.prefix = prefix 
 
+    print('prefix', self.prefix)
+
   def get_data(self, size, pp):
     data = []
     self.size = size if len(size) == 2 else (0,9999999) 
@@ -207,7 +209,8 @@ class MALARIADB:
     a = Path(r'./datasets/Malaria/Parasitized')
     b = Path(r'./datasets/Malaria/Uninfected')
 
-    print(self.size, self.shape)
+    if len(self.size) > 1:
+      print(f'Range: {self.size}')
 
     for i,d in enumerate(a.iterdir()):
       if d.is_file() and  str(d).endswith('png'):
@@ -216,7 +219,7 @@ class MALARIADB:
         elif i >= self.size[1]:
           break
         else:
-          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = Image.open(d).resize((self.shape[0], self.shape[1])).convert('L')
           im = np.array(im).reshape(self.shape).astype('float32')/255 
           data.append([im,1])
 
@@ -227,13 +230,13 @@ class MALARIADB:
         elif i >= self.size[1]:
           break
         else:
-          im = Image.open(d).resize((self.shape[0], self.shape[1]))
+          im = Image.open(d).resize((self.shape[0], self.shape[1])).convert('L')
           im = np.array(im).reshape(self.shape).astype('float32')/255 
           data.append([im,0])
 
     #shuffle
     data = np.array(data)
-    np.random.shuffle(data)
+    # np.random.shuffle(data)
 
     ## TEST DATA
     test_size = int(len(data)*0.9)
@@ -247,6 +250,7 @@ class MALARIADB:
 
     if pp is not None and pp != '0': 
       prep_data(np.array(X_train), np.array(X_test), self.SAVE_PATH, self.prefix, self.shape)
+
 
     # Load pre-processed images
     q_train_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_train_images.npy")

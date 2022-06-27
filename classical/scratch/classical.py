@@ -5,7 +5,6 @@
 # 10000 data to test
 
 import os
-from tkinter.tix import IMAGE
 from model import Mnist, Imagenet, Covid, Malaria 
 from database import MNISTDB, IMAGENETDB, COVIDB, MALARIADB
 import time
@@ -16,23 +15,22 @@ if __name__ == '__main__':
   # Constants
   MNIST_SHAPE = (28,28,4)
   IMAGENET_SHAPE = (100,100,4)
-  COVID_SHAPE = (250,250,1)
-  MALARIA_SHAPE = (250, 250, 3)
+  COVID_SHAPE = (100,100,1)
+  MALARIA_SHAPE = (100, 100, 1)
   OPT = 'rmsprop' #'adam'
   LOSS = 'categorical_crossentropy'
   METRICS = ['accuracy', 'AUC']
-  BATCH = 64
-  EPOCHS = 5 
+  BATCH = 32
+  EPOCHS = 20 
 
   RANDOM_LAYERS = 1    # Number of random layers
   SIZE = -1 
   SAVE_PATH = "quantum/scratch/quanvolution/" # Data saving folder
   N_WIRES = 4
 
-  AVAILABLE_MODELS = ['MNIST, IMAGENET', 'COVID', 'MALARIA']
-
+  AVAILABLE_MODELS = ['MNIST', 'IMAGENET', 'COVID', 'MALARIA']
   MODEL = os.environ.get('MODEL').strip()
-  MNIST, IMAGENET, COVID = False, False, False
+  MNIST, IMAGENET, COVID, MALARIA = False, False, False, False
 
   if MODEL is None:
     raise ValueError(f'Model parameter is required and can\'t be {MODEL}')
@@ -138,10 +136,10 @@ if COVID:
   time.sleep(1)
 
   print("Evaluating model ... ")
-  loss, acc = model.evaluate(X_test, Y_test)
+  loss, acc, auc = model.evaluate(X_test, Y_test)
 
   time.sleep(1)
-  print(f'Accuracy of Neural Network: {acc}')
+  print(f'Accuracy: {acc}, AUC: {auc}')
 
 
 """ MALARIA DATASET  """
@@ -153,7 +151,7 @@ if MALARIA:
 
   db = MALARIADB(SAVE_PATH, MALARIA_SHAPE, prefix=prefix)
   SIZE = os.environ.get('SIZE')
-  if SIZE is None:
+  if SIZE is None or SIZE.strip() == '-1':
     SIZE = -1
   elif len(SIZE) == 1:
     SIZE = int(SIZE)
@@ -163,6 +161,7 @@ if MALARIA:
     raise ValueError(f'SIZE takes up to 2 arguments, but got {SIZE}')
 
   X_train, Y_train, X_test, Y_test = db.get_data(SIZE)
+  print(X_train.shape)
 
   print("Building Architecture of Neural Network...")
   M = Malaria(MALARIA_SHAPE, OPT, LOSS, METRICS)

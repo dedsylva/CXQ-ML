@@ -15,7 +15,10 @@ set MODEL=MALARIA && set SIZE=0,100 && python classical/scratch/classical.py
 set MODEL=MNIST && set PREPROCESS=1 && python quantum/scratch/qml.py
 set MODEL=IMAGENET && set PREPROCESS=1 && python quantum/scratch/qml.py
 set MODEL=COVID && set PREPROCESS=1 && python quantum/scratch/qml.py
-set MODEL=MALARIA && set PREPROCESS=1 && SET pt=1 && set SIZE=0,100 && python quantum/scratch/qml.py
+set MODEL=MALARIA && set PREPROCESS=1 && SET pt=1 && set SIZE=0,1000 && python quantum/scratch/qml.py
+
+# visualizing the effect of convolutions (classical and quantum)
+set MODEL=MNIST && python visual.py
 ```
 
 ## Objective
@@ -64,3 +67,10 @@ The datasets that will be used are:
 - Malaria Blood Cells Dataset
    - Classical [X]
    - Quantum [X]
+- Visualization
+   - Create visualization tool for Images
+      - MNIST Dataset [X]
+      - Bees and Ants Dataset []
+      - COVID-19 X-Rays Dataset []
+      - Malaria Blood Cells Dataset []
+   - Create visualization tool for quantization method []
