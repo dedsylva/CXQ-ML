@@ -1,8 +1,9 @@
 import os
+import time
 from model import Mnist, Imagenet, Covid, Malaria 
 from database import MNISTDB, IMAGENETDB, COVIDB, MALARIADB 
-import time
 from sklearn.utils import shuffle
+from pure import run
 
 if __name__ == '__main__':
 
@@ -22,10 +23,15 @@ if __name__ == '__main__':
   SAVE_PATH = "quantum/scratch/quanvolution/" # Data saving folder
   N_WIRES = 4
 
-
   AVAILABLE_MODELS = ['MNIST', 'IMAGENET', 'COVID', 'MALARIA']
+  AVAILABLE_TYPES = ['PURE', 'MIXED']
+
+  DEBUG = bool(int(os.environ.get('DEBUG').strip()))
+  PRINT = bool(int(os.environ.get('PRINT').strip()))
+  pp = os.environ.get('PREPROCESS').strip() if os.environ.get('PREPROCESS') is not None else '0'
 
   MODEL = os.environ.get('MODEL').strip()
+  TYPE  = os.environ.get('TYPE').strip() if os.environ.get('TYPE') is not None else 'PURE'
   MNIST, IMAGENET, COVID, MALARIA = False, False, False, False
 
   if MODEL is None:
@@ -49,42 +55,47 @@ if __name__ == '__main__':
   else:
     raise ValueError(f'Wrong model provided. Got {MODEL} but expected {AVAILABLE_MODELS[:]} ')
 
+  
+
 """ MNIST DATASET """
 if MNIST:
   print("*** MNIST DATASET CHOSEN ***")
 
   db = MNISTDB(SAVE_PATH, MNIST_SHAPE, prefix='mnist')
-  pp = os.environ.get('PREPROCESS').strip()
   SIZE = os.environ.get('SIZE')
   SIZE = -1 if SIZE is None else int(SIZE)
 
   X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
 
-  print("Building Architecture of Neural Network...")
-  MN = Mnist(MNIST_SHAPE, OPT, LOSS, METRICS)
+  if TYPE == 'PURE':
+    run(X_train, Y_train, X_test, Y_test, layers=5, batch=16, categoric=True, Debug=DEBUG, PRINT=PRINT)
 
-  model = MN.build_model()
-  print("- Model Successfully built. ")
+  else:
 
-  time.sleep(1)
-  print("Training Neural Network")
-  history = MN.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+    print("Building Architecture of Neural Network...")
+    MN = Mnist(MNIST_SHAPE, OPT, LOSS, METRICS)
+
+    model = MN.build_model()
+    print("- Model Successfully built. ")
+
+    time.sleep(1)
+    print("Training Neural Network")
+    history = MN.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
 
 
-  print("Neural Network Successfully Trained!")
-  time.sleep(1)
+    print("Neural Network Successfully Trained!")
+    time.sleep(1)
 
-  print("Evaluating model ... ")
-  loss, acc, auc = model.evaluate(X_test, Y_test)
+    print("Evaluating model ... ")
+    loss, acc, auc = model.evaluate(X_test, Y_test)
 
-  print(f'Accuracy: {acc}, AUC: {auc}')
+    print(f'Accuracy: {acc}, AUC: {auc}')
 
 
 """ IMAGENET DATASET (ANTS AND BEES) """
 if IMAGENET:
   print("*** IMAGENET (ANTS AND BEES) DATASET CHOSEN ***")
   db = IMAGENETDB(SAVE_PATH, IMAGENET_SHAPE, prefix='imagenet')
-  pp = os.environ.get('PREPROCESS').strip()
   SIZE = os.environ.get('SIZE')
   SIZE = -1 if SIZE is None else int(SIZE)
   X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
@@ -117,7 +128,6 @@ if COVID:
   print("*** COVID-19 DATASET CHOSEN ***")
 
   db = COVIDB(SAVE_PATH, COVID_SHAPE, prefix='covid')
-  pp = os.environ.get('PREPROCESS').strip()
   SIZE = os.environ.get('SIZE')
   SIZE = -1 if SIZE is None else int(SIZE)
   X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
@@ -153,7 +163,6 @@ if MALARIA:
   prefix = 'malaria'+pt if pt is not None else 'malaria'
 
   db = MALARIADB(SAVE_PATH, MALARIA_SHAPE, prefix=prefix)
-  pp = os.environ.get('PREPROCESS').strip()
   SIZE = os.environ.get('SIZE')
   if SIZE is None:
     SIZE = -1
