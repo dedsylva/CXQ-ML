@@ -38,6 +38,7 @@ class MNISTDB:
     train_images = np.array(train_images[..., tf.newaxis], requires_grad=False)
     test_images = np.array(test_images[..., tf.newaxis], requires_grad=False)
 
+    # TODO: create environment variable for this, because its affecting other training
     return train_images, train_labels, test_images, test_labels
 
     if pp is not None and pp != '0': 

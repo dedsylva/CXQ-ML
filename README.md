@@ -1,7 +1,30 @@
 # CXQ-ML
 
 -------
-A comparison of Classical and Quantum Machine Learning Approach for Neural Networks in <b>binary image classification</b>.
+A comparison of Classical and Quantum Machine Learning Approach for Neural Networks in <b>image classification</b>.
+
+
+## Results
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/ant.png">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/bee.png">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/covid.png">
+</p>
+
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/mnist.png">
+</p>
+
+
+
 
 ## Running
 ```bash
@@ -65,7 +88,6 @@ The datasets that will be used are:
 
 - QML
  - Pennylane
-
 
 #### TODO
 - MNIST Dataset

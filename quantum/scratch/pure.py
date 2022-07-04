@@ -3,13 +3,14 @@ from pennylane import numpy as np
 import pennylane as qml
 
 N_WIRES=4
+N_OUTPUT=3
 
 # Device for quanvolutional layer
 dev = qml.device("default.qubit", wires=N_WIRES)
 
 # Device for prediction layer
 # TODO: let the number of wires accordingly to Y.shape[0] (there should be some trick)
-dev2 = qml.device("default.qubit", wires=10)
+dev2 = qml.device("default.qubit", wires=N_OUTPUT)
 
 
 @qml.qnode(dev)
@@ -31,25 +32,24 @@ def circuit(phi, n):
 def pred(params, data):
   assert len(data.shape) == 1, f"Data must be 1D for prediction, but got {data.shape}. Try using flatten first"
 
-  for j  in range(len(data)):
-    for k in range(10):
+  for j in range(len(data)):
+    for k in range(N_OUTPUT):
       for i in range(len(params)):
         qml.RY(np.pi*params[i]*data[j], wires=k)
         qml.Hadamard(k)
 
   for _ in range(N_LAYERS):
-
     qml.CNOT(wires=[0,1])
-    qml.CNOT(wires=[2,3])
-    qml.CNOT(wires=[4,5])
-    qml.CNOT(wires=[6,7])
-    qml.CNOT(wires=[8,9])
+    # qml.CNOT(wires=[2,3])
+    # qml.CNOT(wires=[4,5])
+    # qml.CNOT(wires=[6,7])
+    # qml.CNOT(wires=[8,9])
 
 
-  return [qml.expval(qml.PauliZ(j)) for j in range(10)]
+  return [qml.expval(qml.PauliZ(j)) for j in range(N_OUTPUT)]
 
 def normalize(data):
-  return np.array([d / sum(data) for d in data], requires_grad=False)
+  return np.array([abs(d) / sum(abs(data)) for d in data], requires_grad=False)
 
 def flatten(img): 
   return img.reshape(-1) 
@@ -74,7 +74,7 @@ def quanv(im, n_filters, input=True):
           ], n_filters)
 
         for c in range(n_filters):
-          out[j // 2, k // 2, c] = np.max(q_results[0])
+          out[j // 2, k // 2, c] = np.sum(q_results[0])
   else:
     for j in range(0, im.shape[0], 2):
       for k in range(0, im.shape[1], 2):
@@ -86,7 +86,7 @@ def quanv(im, n_filters, input=True):
               im[j + 1, k + 1, c]
             ], n_filters)
 
-          out[j // 2, k // 2, c] = np.max(q_results[0])
+          out[j // 2, k // 2, c] = np.sum(q_results[0])
     
   return out
 
@@ -139,7 +139,7 @@ def train(x, y, epochs, batch, show_summary=False):
   if show_summary:
     print(qml.draw(circuit)([1., 2., 3., 4.], n=4))  
     print("\n\n")
-    print(qml.draw(pred)(params, np.random.random((10,)))) 
+    print(qml.draw(pred)(params, np.random.random((N_OUTPUT,)))) 
 
 
   if DEBUG:
@@ -160,9 +160,9 @@ def train(x, y, epochs, batch, show_summary=False):
       res = quanv(x[v], n_filters=1, input=True)
       if DEBUG and j == 0: 
         print("quanv  :", res.shape)
-      res = maxPool(res)
-      if DEBUG and j == 0: 
-        print("maxPool:", res.shape)
+      # res = maxPool(res)
+      # if DEBUG and j == 0: 
+      #   print("maxPool:", res.shape)
       res = flatten(res)
       if DEBUG and j == 0: 
         print("flatten:", res.shape)
@@ -193,7 +193,7 @@ def run(X_train, Y_train, X_test, Y_test, layers, batch, categoric, Debug=False,
   N_LAYERS = layers 
   CATEGORIC = categoric 
 
-  classes, losses, params = train(X_train[:20], Y_train[:20], epochs=50, batch=batch)
+  classes, losses, params = train(X_train[:20], Y_train[:20], epochs=10, batch=batch)
 
   if PRINT:
     import matplotlib.pyplot as plt

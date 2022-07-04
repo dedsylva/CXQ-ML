@@ -102,25 +102,30 @@ if IMAGENET:
   X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
   X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
 
-  print("Building Architecture of Neural Network...")
-  IMG = Imagenet(IMAGENET_SHAPE, OPT, LOSS, METRICS)
+  if TYPE == 'PURE':
+    run(X_train, Y_train, X_test, Y_test, layers=5, batch=16, categoric=True, Debug=DEBUG, PRINT=PRINT)
 
-  model = IMG.build_model()
-  print("- Model Successfully built. ")
+  else:
 
-  time.sleep(1)
-  print("Training Neural Network")
-  Results = IMG.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+    print("Building Architecture of Neural Network...")
+    IMG = Imagenet(IMAGENET_SHAPE, OPT, LOSS, METRICS)
+
+    model = IMG.build_model()
+    print("- Model Successfully built. ")
+
+    time.sleep(1)
+    print("Training Neural Network")
+    Results = IMG.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
 
 
-  print("Neural Network Successfully Trained!")
-  time.sleep(1)
+    print("Neural Network Successfully Trained!")
+    time.sleep(1)
 
-  print("Evaluating model ... ")
-  loss, acc, auc = model.evaluate(X_test, Y_test)
+    print("Evaluating model ... ")
+    loss, acc, auc = model.evaluate(X_test, Y_test)
 
-  time.sleep(1)
-  print(f'Accuracy: {acc}, AUC: {auc}')
+    time.sleep(1)
+    print(f'Accuracy: {acc}, AUC: {auc}')
 
 
 """ COVID-19 DATASET  """
@@ -135,25 +140,29 @@ if COVID:
   X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
   X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
 
-  print("Building Architecture of Neural Network...")
-  CV = Covid(COVID_SHAPE, OPT, LOSS, METRICS)
+  if TYPE == 'PURE':
+    run(X_train, Y_train, X_test, Y_test, layers=5, batch=16, categoric=True, Debug=DEBUG, PRINT=PRINT)
 
-  model = CV.build_model()
-  print("- Model Successfully built. ")
+  else:
+    print("Building Architecture of Neural Network...")
+    CV = Covid(COVID_SHAPE, OPT, LOSS, METRICS)
 
-  time.sleep(1)
-  print("Training Neural Network")
-  Results = CV.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+    model = CV.build_model()
+    print("- Model Successfully built. ")
+
+    time.sleep(1)
+    print("Training Neural Network")
+    Results = CV.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
 
 
-  print("Neural Network Successfully Trained!")
-  time.sleep(1)
+    print("Neural Network Successfully Trained!")
+    time.sleep(1)
 
-  print("Evaluating model ... ")
-  loss, acc, auc = model.evaluate(X_test, Y_test)
+    print("Evaluating model ... ")
+    loss, acc, auc = model.evaluate(X_test, Y_test)
 
-  time.sleep(1)
-  print(f'Accuracy: {acc}, AUC: {auc}')
+    time.sleep(1)
+    print(f'Accuracy: {acc}, AUC: {auc}')
 
 
 """ MALARIA DATASET  """
