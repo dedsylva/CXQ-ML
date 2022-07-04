@@ -7,20 +7,20 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 ## Results
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/ant.png">
+  <img width="80%" height="80%" src="images/ant.png">
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/bee.png">
+  <img width="80%" height="80%" src="images/bee.png">
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/covid.png">
+  <img width="80%" height="80%" src="images/covid.png">
 </p>
 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dedsylva/CXQ-ML/master/images/mnist.png">
+  <img width="80%" height="80%" src="images/mnist.png">
 </p>
 
 
