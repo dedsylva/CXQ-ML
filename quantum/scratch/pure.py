@@ -153,8 +153,8 @@ def train(x, y, epochs, batch, show_summary=False):
     # Y = y[batch_index]
     # X = x[batch_index]
     batch_index = np.random.randint(0, len(y), (batch,))
-    # for j,v in enumerate(batch_index):
-    for j,v in enumerate(range(len(y))):
+    for j,v in enumerate(batch_index):
+    # for j,v in enumerate(range(len(y))):
 
       print(f"Training data {v}...", end="\r", flush=True)
       res = quanv(x[v], n_filters=1, input=True)
