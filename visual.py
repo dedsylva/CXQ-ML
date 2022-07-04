@@ -66,20 +66,20 @@ if __name__ == '__main__':
 
     plt.title('Before - MNIST')
     plt.imshow(X_train[0])
-    # plt.show()
+    plt.show()
 
     Y_train = tf.keras.layers.Conv2D(filters=32, 
                                     kernel_size=(2,2), 
                                     activation='relu', 
                                     input_shape=X_train[0:].shape)(X_train[0].reshape(1, X_train[0].shape[0], X_train[0].shape[1], 1))
 
-    multiplot(Y_train, title='After - MNIST - Classical 2D Convolutional Layer', show=False)
+    multiplot(Y_train, title='After - MNIST - Classical 2D Convolutional Layer', show=True)
     
     train_images = np.array(train_images[..., tf.newaxis])
     test_images = np.array(test_images[..., tf.newaxis])
     q_train_images, q_test_images = prep_data(train_images, test_images, SAVE_PATH, 'mnist', MNIST_SHAPE, SAVE=False, LIMIT=0)
 
-    multiplot(q_train_images, title='After - MNIST - Quantum Random Pre-Processing', show=False)
+    multiplot(q_train_images, title='After - MNIST - Quantum Random Pre-Processing', show=True)
 
     new_q_image = np.load(SAVE_PATH + "mnist_q_train_images.npy")
 

@@ -6,3 +6,5 @@ quantum/transfered/__pycache__
 quantum/scratch/quanvolution
 datasets/
 comparisons.py
+__pycache__/
+qml_test.py

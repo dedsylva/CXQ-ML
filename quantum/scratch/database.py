@@ -38,6 +38,7 @@ class MNISTDB:
     train_images = np.array(train_images[..., tf.newaxis], requires_grad=False)
     test_images = np.array(test_images[..., tf.newaxis], requires_grad=False)
 
+    return train_images, train_labels, test_images, test_labels
 
     if pp is not None and pp != '0': 
       prep_data(train_images, test_images, self.SAVE_PATH, self.prefix, self.shape)

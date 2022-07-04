@@ -21,6 +21,19 @@ set MODEL=MALARIA && set PREPROCESS=1 && SET pt=1 && set SIZE=0,1000 && python q
 set MODEL=MNIST && python visual.py
 ```
 
+## Flags (Environment Variables)
+ - MODEL      [Mandatory]
+   - Trains the Model from the List: MNIST, IMAGENET, COVID, MALARIA
+ - PRINT      [Optional] 
+   - Prints history of losses
+ - TYPE       [Optional] - Only for quantum 
+   - If PURE, trains only with quantum operations, if MIXED (default) trains with 1st layer as quanvolutional and the rest with tensorflow/keras
+   - <strong>Pure Only working in MNIST for now </strong>
+ - DEBUG      [Optional] 
+   - Shows shapes (only available in PURE type)
+ - PREPROCESS [Optional] 
+   - Preprocess the dataset with the quanvolutional layer (necessary for MIXED type)
+
 ## Objective
 
 -------
@@ -73,4 +86,9 @@ The datasets that will be used are:
       - Bees and Ants Dataset []
       - COVID-19 X-Rays Dataset []
       - Malaria Blood Cells Dataset []
-   - Create visualization tool for quantization method []
+- Pure Type Implementation
+   - Create Training only using quantum operations
+      - MNIST Dataset [X] -- failing
+      - Bees and Ants Dataset []
+      - COVID-19 X-Rays Dataset []
+      - Malaria Blood Cells Dataset []
