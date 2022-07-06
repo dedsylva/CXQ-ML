@@ -199,9 +199,9 @@ The datasets that will be used are:
 - Visualization
    - Create visualization tool for Images
       - MNIST Dataset [X]
-      - Bees and Ants Dataset []
-      - COVID-19 X-Rays Dataset []
-      - Malaria Blood Cells Dataset []
+      - Bees and Ants Dataset [X]
+      - COVID-19 X-Rays Dataset [X]
+      - Malaria Blood Cells Dataset [X]
 - Pure Type Implementation
    - Create Training only using quantum operations
       - MNIST Dataset [X] -- failing
