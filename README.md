@@ -1,8 +1,29 @@
 # CXQ-ML
 
--------
 A comparison of Classical and Quantum Machine Learning Approach for Neural Networks in <b>image classification</b>.
 
+-------
+## Idea
+The Idea is simple: compare a "classical" convolutional neural network and a "quantum" convolutional neural network. The motivation came from the [quanvolutional layer](https://arxiv.org/abs/1904.04767) and the tutorial by [pennylane](https://pennylane.ai/qml/demos/tutorial_quanvolution.html). The intention was to take one step further, and apply the concepts for real world dataset scenarios, and try to visualize the effect of the quantum approach.
+
+-------
+<center><h2> Classical Convolutional Layer</h2></center>
+
+<p align="center">
+  <img width="100%" height="100%" src="images/cnn.png">
+</p>
+
+
+<center><h2> Quanvolutional Layer</h2></center>
+
+<p align="center">
+  <img width="100%" height="100%" src="images/qnn.png">
+</p>
+
+-------
+
+## Conclusions
+Quantum computing can help to produce the same answers that classical computing can (see Results section below). The big bottleneck currently is the limitation of number of qubits available. Classical Deep Learning has been successful due to the GPU capacity of heavy and parallel computing. Even that Quantum computers can take advantage of parallel computing by using [superposition](https://en.wikipedia.org/wiki/Quantum_superposition), the limitation of number of qubits available makes computing really slow for real dataset scenarios. For the datasets <b>ants/bee</b> from Imagenet the quantum pre-processing took a few hours and for the <b>Malaria</b> dataset, it took a couple days (reshaping g the original images to 100x100x1)
 
 ## Results
 
@@ -15,12 +36,15 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 </p>
 
 <p align="center">
+  <img width="80%" height="80%" src="images/mnist.png">
+</p>
+
+<p align="center">
   <img width="80%" height="80%" src="images/covid.png">
 </p>
 
-
 <p align="center">
-  <img width="80%" height="80%" src="images/mnist.png">
+  <img width="80%" height="80%" src="images/malaria.png">
 </p>
 
 
@@ -31,7 +55,7 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 
 ```bash
 # run the script below
-.\install.bat
+./install.bat
 ```
 
 ### Installing libraries
@@ -40,10 +64,63 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 pip install -r requirements.txt
 ```
 
+## Folder Structure
 
-
+```
+CXQ-ML
+│   visual.py
+│
+│
+└───datasets
+│   │
+│   └───Covid19
+│   │   │   
+│   │   └───train
+│   │   │     │   
+│   │   │     └───Covid
+│   │   │     │           
+│   │   │     └───Normal
+│   │   │     │           
+│   │   │     └───ViralPneumonia
+│   │   │   
+│   │   └───test
+│   │         │   
+│   │         └───Covid
+│   │         │           
+│   │         └───Normal
+│   │         │           
+│   │         └───ViralPneumonia
+│   │
+│   └───hymenoptera_data
+│   │   │   
+│   │   └───train
+│   │   │     │   
+│   │   │     └───ants
+│   │   │     │           
+│   │   │     └───bees
+│   │   │   
+│   │   └───val
+│   │         │   
+│   │         └───ants
+│   │         │           
+│   │         └───bees
+│   │
+│   └───Malaria
+│       │   
+│       └───Parasitized
+│       │   
+│       └───Uninfected
+│   
+└───quantum/scratch
+│           qml.py
+│   
+│   
+└───classical/scratch
+            classical.py
+```
 
 ## Running
+
 ```bash
 # classical networks
 set MODEL=MNIST && python classical/scratch/classical.py

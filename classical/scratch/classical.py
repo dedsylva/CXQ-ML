@@ -1,9 +1,3 @@
-########## MNIST Classification Problem ##########
-# Developing a CNN that can predict which digit the image has
-# We will download the keras.dataset, from which he have 28x28 images with:
-# 60000 data to train
-# 10000 data to test
-
 import os
 from model import Mnist, Imagenet, Covid, Malaria 
 from database import MNISTDB, IMAGENETDB, COVIDB, MALARIADB
