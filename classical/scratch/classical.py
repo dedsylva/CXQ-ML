@@ -13,7 +13,7 @@ from sklearn.utils import shuffle
 if __name__ == '__main__':
 
   # Constants
-  MNIST_SHAPE = (28,28,4)
+  MNIST_SHAPE = (28,28,1)
   IMAGENET_SHAPE = (100,100,4)
   COVID_SHAPE = (100,100,1)
   MALARIA_SHAPE = (100, 100, 1)
@@ -21,7 +21,7 @@ if __name__ == '__main__':
   LOSS = 'categorical_crossentropy'
   METRICS = ['accuracy', 'AUC']
   BATCH = 32
-  EPOCHS = 20 
+  EPOCHS = 5 
 
   RANDOM_LAYERS = 1    # Number of random layers
   SIZE = -1 
@@ -77,7 +77,7 @@ if MNIST:
   time.sleep(1)
 
   print("Evaluating model ... ")
-  loss, acc = model.evaluate(X_test, Y_test)
+  loss, acc, auc = model.evaluate(X_test, Y_test)
 
   time.sleep(1)
   print(f'Accuracy of Neural Network: {acc}')

@@ -24,6 +24,23 @@ A comparison of Classical and Quantum Machine Learning Approach for Neural Netwo
 </p>
 
 
+## Install
+------
+
+### Using venv (Recommended)
+
+```bash
+# run the script below
+.\install.bat
+```
+
+### Installing libraries
+
+```bash
+pip install -r requirements.txt
+```
+
+
 
 
 ## Running

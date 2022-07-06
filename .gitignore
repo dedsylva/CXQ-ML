@@ -8,3 +8,4 @@ datasets/
 comparisons.py
 __pycache__/
 qml_test.py
+venv/
