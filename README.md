@@ -178,10 +178,10 @@ The datasets that will be used are:
 
 -------
 - Classical ML
- - Tensorflow
+   - Tensorflow
 
 - QML
- - Pennylane
+    - Pennylane
 
 #### TODO
 - MNIST Dataset
