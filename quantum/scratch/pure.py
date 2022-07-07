@@ -1,9 +1,13 @@
 import os
 from pennylane import numpy as np
+from pennylane.templates import RandomLayers
 import pennylane as qml
+import tensorflow as tf
 
+np.random.seed(0)           # Seed for NumPy random number generator
+tf.random.set_seed(0)       # Seed for TensorFlow random number generator
 N_WIRES=4
-N_OUTPUT=3
+N_OUTPUT=10
 
 # Device for quanvolutional layer
 dev = qml.device("default.qubit", wires=N_WIRES)
@@ -13,19 +17,34 @@ dev = qml.device("default.qubit", wires=N_WIRES)
 dev2 = qml.device("default.qubit", wires=N_OUTPUT)
 
 
+
 @qml.qnode(dev)
-def circuit(phi, n):
+def circuit(phi, n, filter):
   # Our quantum filter
   for j in range(len(phi)):
     # TODO: Test with and without parameters
     # qml.RY(params[0]*phi[j], wires=j)
     qml.RY(np.pi*phi[j], wires=j)
 
-  for i in range(n):
-    qml.Hadamard(i)
+  rand_params = np.random.uniform(high=2 * np.pi, size=(N_LAYERS, 4))
+
+  if filter == 1:
+    # Random quantum circuit
+    RandomLayers(rand_params, wires=list(range(4)))
+  elif filter == 2:
+    for i in range(n):
+      qml.Hadamard(i)
+  elif filter == 3:
+    for i in range(n):
+      qml.Hadamard(i)
+      qml.RY(np.pi*0.3, wires=0)
+  elif filter == 4:
+    for i in range(n):
+      qml.CNOT(wires=[0,1])
+      qml.CNOT(wires=[2,3])
+
 
   return [qml.expval(qml.PauliZ(j)) for j in range(len(phi))]
-  # return qml.probs(wires=range(N_WIRES))
 
 
 @qml.qnode(dev2)
@@ -33,17 +52,17 @@ def pred(params, data):
   assert len(data.shape) == 1, f"Data must be 1D for prediction, but got {data.shape}. Try using flatten first"
 
   for j in range(len(data)):
-    for k in range(N_OUTPUT):
-      for i in range(len(params)):
-        qml.RY(np.pi*params[i]*data[j], wires=k)
-        qml.Hadamard(k)
+    # for k in range(N_OUTPUT):
+    for i in range(N_OUTPUT):
+      qml.RY(np.pi*params[i]*data[j], wires=i)
+        # qml.Hadamard(k)
 
   for _ in range(N_LAYERS):
     qml.CNOT(wires=[0,1])
-    # qml.CNOT(wires=[2,3])
-    # qml.CNOT(wires=[4,5])
-    # qml.CNOT(wires=[6,7])
-    # qml.CNOT(wires=[8,9])
+    qml.CNOT(wires=[2,3])
+    qml.CNOT(wires=[4,5])
+    qml.CNOT(wires=[6,7])
+    qml.CNOT(wires=[8,9])
 
 
   return [qml.expval(qml.PauliZ(j)) for j in range(N_OUTPUT)]
@@ -66,27 +85,28 @@ def quanv(im, n_filters, input=True):
   if input:
     for j in range(0, im.shape[0], 2):
       for k in range(0, im.shape[1], 2):
-        q_results = circuit([
-            im[j, k, 0],
-            im[j, k + 1, 0],
-            im[j + 1, k, 0],
-            im[j + 1, k + 1, 0]
-          ], n_filters)
-
         for c in range(n_filters):
-          out[j // 2, k // 2, c] = np.sum(q_results[0])
+          out[j // 2, k // 2, c] = np.sum(circuit([
+              im[j, k, 0],
+              im[j, k + 1, 0],
+              im[j + 1, k, 0],
+              im[j + 1, k + 1, 0]
+            ], n_filters, c))
+
+        # for c in range(n_filters):
+        #   out[j // 2, k // 2, c] = np.sum(q_results[c])
   else:
     for j in range(0, im.shape[0], 2):
       for k in range(0, im.shape[1], 2):
         for c in range(n_filters):
-          q_results = circuit([
-              im[j, k, c],
-              im[j, k + 1, c],
-              im[j + 1, k, c],
-              im[j + 1, k + 1, c]
-            ], n_filters)
+          out[j // 2, k // 2, c] = np.sum(circuit([
+                im[j, k, c],
+                im[j, k + 1, c],
+                im[j + 1, k, c],
+                im[j + 1, k + 1, c]
+              ], n_filters, c))
 
-          out[j // 2, k // 2, c] = np.sum(q_results[0])
+          # out[j // 2, k // 2, c] = np.sum(q_results[c])
     
   return out
 
@@ -111,6 +131,29 @@ def maxPool(im):
  
   return out
 
+def avgPool(im):
+  """ Avg Pool with a 2 by 2 kernel(filter) and a stride equal to 2 
+      If Input has size (m x n x c) , the output will be (m/2 x n/2 x c) """
+
+  assert im.shape[0] == im.shape[1], f"Quadratic Matrix Only! Expected ({im.shape[0]},{im.shape[0]}) matrix, but got ({im.shape[0]},{im.shape[1]})"
+  assert im.shape[0] %2 == 0, f"Shapes must be even, got {im.shape[0]}"
+  out = np.zeros((im.shape[0]//2, im.shape[1]//2, im.shape[2]))
+
+  # for k in range(0, im.shape[2], 2):
+  k = 0
+  for i in range(0, im.shape[0], 2):
+    for j in range(0, im.shape[1], 2):
+      out[i//2,j//2,k] = np.mean([
+          im[i, j, k],
+          im[i, j + 1, k],
+          im[i + 1, j, k],
+          im[i + 1, j + 1, k]
+        ])
+ 
+  return out
+
+
+
 # Dealing with possible zeros
 def log(m):
   return np.nan_to_num(np.log2(m + 1e-03))
@@ -130,7 +173,7 @@ def cost(params, res):
 
 def train(x, y, epochs, batch, show_summary=False):
   opt = qml.GradientDescentOptimizer(stepsize=0.3)
-  params = np.array([0.1,0.1,0.1],requires_grad=True) # initial params for circuit optimization
+  params = np.array([0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1],requires_grad=True) # initial params for circuit optimization
   losses = []
   ret = []
   global v, Y 
@@ -152,14 +195,17 @@ def train(x, y, epochs, batch, show_summary=False):
     # We don't even need that v for, just replace by below
     # Y = y[batch_index]
     # X = x[batch_index]
-    batch_index = np.random.randint(0, len(y), (batch,))
-    for j,v in enumerate(batch_index):
-    # for j,v in enumerate(range(len(y))):
+    # batch_index = np.random.randint(0, len(y), (batch,))
+    # for j,v in enumerate(batch_index):
+    for j,v in enumerate(range(len(y))):
 
       print(f"Training data {v}...", end="\r", flush=True)
       res = quanv(x[v], n_filters=1, input=True)
       if DEBUG and j == 0: 
         print("quanv  :", res.shape)
+      res = avgPool(res)
+      if DEBUG and j == 0: 
+        print("avgPool:", res.shape)
       # res = maxPool(res)
       # if DEBUG and j == 0: 
       #   print("maxPool:", res.shape)

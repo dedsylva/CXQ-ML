@@ -65,10 +65,10 @@ if MNIST:
   SIZE = os.environ.get('SIZE')
   SIZE = -1 if SIZE is None else int(SIZE)
 
-  X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
+  X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp, TYPE)
 
   if TYPE == 'PURE':
-    run(X_train, Y_train, X_test, Y_test, layers=5, batch=16, categoric=True, Debug=DEBUG, PRINT=PRINT)
+    run(X_train, Y_train, X_test, Y_test, layers=1, batch=8, categoric=True, Debug=DEBUG, PRINT=PRINT)
 
   else:
 

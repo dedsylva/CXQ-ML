@@ -14,7 +14,7 @@ class MNISTDB:
     self.prefix= prefix 
 
 
-  def get_data(self, size, pp):
+  def get_data(self, size, pp, type):
 
     #load data
     (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
@@ -38,8 +38,8 @@ class MNISTDB:
     train_images = np.array(train_images[..., tf.newaxis], requires_grad=False)
     test_images = np.array(test_images[..., tf.newaxis], requires_grad=False)
 
-    # TODO: create environment variable for this, because its affecting other training
-    return train_images, train_labels, test_images, test_labels
+    if type == 'PURE':
+      return train_images, train_labels, test_images, test_labels
 
     if pp is not None and pp != '0': 
       prep_data(train_images, test_images, self.SAVE_PATH, self.prefix, self.shape)
