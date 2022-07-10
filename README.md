@@ -202,9 +202,9 @@ The datasets that will be used are:
       - Bees and Ants Dataset [X]
       - COVID-19 X-Rays Dataset [X]
       - Malaria Blood Cells Dataset [X]
-- Pure Type Implementation
+- Pure Type Implementation -- doesn't work (it does not learn)
    - Create Training only using quantum operations
-      - MNIST Dataset [X] -- failing
-      - Bees and Ants Dataset []
-      - COVID-19 X-Rays Dataset []
-      - Malaria Blood Cells Dataset []
+      - MNIST Dataset [X] -- doesn't work
+      - Bees and Ants Dataset [X] -- doesn't work
+      - COVID-19 X-Rays Dataset [X] -- doesn't work
+      - Malaria Blood Cells Dataset [X] -- doesn't work

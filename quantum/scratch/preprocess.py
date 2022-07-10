@@ -92,6 +92,9 @@ def prep_data(X_train, X_test, SAVE_PATH, PREFIX, SHAPE, SAVE=True, LIMIT=-1):
       break
   q_train_images = np.asarray(q_train_images)
 
+  if SAVE:
+    np.save(SAVE_PATH + f"{PREFIX}_q_train_images.npy", q_train_images)
+
   q_test_images = []
   print("\nQuantum pre-processing of test images:")
   for idx, img in enumerate(tqdm(X_test)):
@@ -102,7 +105,6 @@ def prep_data(X_train, X_test, SAVE_PATH, PREFIX, SHAPE, SAVE=True, LIMIT=-1):
 
   # Save pre-processed images
   if SAVE:
-    np.save(SAVE_PATH + f"{PREFIX}_q_train_images.npy", q_train_images)
     np.save(SAVE_PATH + f"{PREFIX}_q_test_images.npy", q_test_images)
   else:
     return q_train_images, q_test_images

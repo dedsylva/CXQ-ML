@@ -16,6 +16,7 @@ if __name__ == '__main__':
   LOSS = 'categorical_crossentropy'
   METRICS = ['accuracy', 'AUC']
   BATCH = 64
+  PURE_BATCH = 16
   EPOCHS = 5 
 
   RANDOM_LAYERS = 1    # Number of random layers
@@ -68,7 +69,7 @@ if MNIST:
   X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp, TYPE)
 
   if TYPE == 'PURE':
-    run(X_train, Y_train, X_test, Y_test, layers=1, batch=8, categoric=True, Debug=DEBUG, PRINT=PRINT)
+    run(X_train, Y_train, X_test, Y_test, layers=1, batch=PURE_BATCH, categoric=True, Debug=DEBUG, PRINT=PRINT)
 
   else:
 
@@ -103,7 +104,7 @@ if IMAGENET:
   X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
 
   if TYPE == 'PURE':
-    run(X_train, Y_train, X_test, Y_test, layers=5, batch=16, categoric=True, Debug=DEBUG, PRINT=PRINT)
+    run(X_train, Y_train, X_test, Y_test, layers=5, batch=PURE_BATCH, categoric=False, Debug=DEBUG, PRINT=PRINT)
 
   else:
 
@@ -141,7 +142,7 @@ if COVID:
   X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
 
   if TYPE == 'PURE':
-    run(X_train, Y_train, X_test, Y_test, layers=5, batch=16, categoric=True, Debug=DEBUG, PRINT=PRINT)
+    run(X_train, Y_train, X_test, Y_test, layers=5, batch=PURE_BATCH, categoric=True, Debug=DEBUG, PRINT=PRINT)
 
   else:
     print("Building Architecture of Neural Network...")
@@ -172,8 +173,8 @@ if MALARIA:
   prefix = 'malaria'+pt if pt is not None else 'malaria'
 
   db = MALARIADB(SAVE_PATH, MALARIA_SHAPE, prefix=prefix)
-  SIZE = os.environ.get('SIZE')
-  if SIZE is None:
+  SIZE = os.environ.get('SIZE').strip()
+  if SIZE is None or SIZE == 'ALL':
     SIZE = -1
   elif len(SIZE) == 1:
     SIZE = int(SIZE)
@@ -185,21 +186,25 @@ if MALARIA:
 
   X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
 
-  print("Building Architecture of Neural Network...")
-  M = Malaria(MALARIA_SHAPE, OPT, LOSS, METRICS)
+  if TYPE == 'PURE':
+    run(X_train, Y_train, X_test, Y_test, layers=1, batch=PURE_BATCH, categoric=False, Debug=DEBUG, PRINT=PRINT)
 
-  model = M.build_model()
-  print("- Model Successfully built. ")
+  else:
+    print("Building Architecture of Neural Network...")
+    M = Malaria(MALARIA_SHAPE, OPT, LOSS, METRICS)
 
-  time.sleep(1)
-  print("Training Neural Network")
-  Results = M.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
+    model = M.build_model()
+    print("- Model Successfully built. ")
 
-  print("Neural Network Successfully Trained!")
-  time.sleep(1)
+    time.sleep(1)
+    print("Training Neural Network")
+    Results = M.train(model, X_train, Y_train, epochs=EPOCHS, batch=BATCH)
 
-  print("Evaluating model ... ")
-  loss, acc, auc = model.evaluate(X_test, Y_test)
+    print("Neural Network Successfully Trained!")
+    time.sleep(1)
 
-  time.sleep(1)
-  print(f'Accuracy: {acc}, AUC: {auc}')
+    print("Evaluating model ... ")
+    loss, acc, auc = model.evaluate(X_test, Y_test)
+
+    time.sleep(1)
+    print(f'Accuracy: {acc}, AUC: {auc}')

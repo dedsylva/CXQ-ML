@@ -9,3 +9,4 @@ comparisons.py
 __pycache__/
 qml_test.py
 venv/
+quantization.py
