@@ -51,14 +51,14 @@ Quantum computing can help to produce the same answers that classical computing 
 ## Install
 ------
 
-### Using venv (Recommended)
+### Option 1 - Using venv (Recommended)
 
 ```bash
 # run the script below
 ./install.bat
 ```
 
-### Installing libraries
+### Option 2 - Installing libraries directly
 
 ```bash
 pip install -r requirements.txt
