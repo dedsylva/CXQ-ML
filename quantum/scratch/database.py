@@ -13,6 +13,26 @@ class MNISTDB:
     self.shape = shape
     self.prefix= prefix 
 
+  def get_random(self, size, random_path=None):
+    if random_path is not None:
+
+      #load data
+      (_, train_labels), (_, test_labels) = mnist.load_data()
+
+      if size != -1:
+        # Reduce dataset size
+        train_labels = train_labels[:size]
+        test_labels = test_labels[:size]
+
+      # Categorical data for labels
+      train_labels = to_categorical(train_labels)
+      test_labels = to_categorical(test_labels)
+
+      # Get the data quantum pre-processed with random circuit
+      train_images = np.load(random_path + f"{self.prefix}_q_train_images.npy")
+      test_images = np.load(random_path + f"{self.prefix}_q_test_images.npy")
+
+      return train_images, np.array(train_labels), test_images, np.array(test_labels)
 
   def get_data(self, size, pp, type):
 
@@ -60,6 +80,20 @@ class IMAGENETDB:
     self.SAVE_PATH = SAVE_PATH
     self.shape = shape
     self.prefix = prefix 
+
+  def get_random(self, size, random_path=None):
+    if random_path is not None:
+
+      #load data
+      train_labels = [1]*124 + [0]*121
+      test_labels = [1]*70 + [0]*83
+
+      # Get the data quantum pre-processed with random circuit
+      train_images = np.load(random_path + f"{self.prefix}_q_train_images.npy")
+      test_images = np.load(random_path + f"{self.prefix}_q_test_images.npy")
+
+      return train_images, np.array(train_labels), test_images, np.array(test_labels)
+
 
   def get_data(self, size, pp):
     X_train, Y_train = [], []
@@ -122,6 +156,23 @@ class COVIDB:
     self.SAVE_PATH = SAVE_PATH
     self.shape = shape
     self.prefix = prefix 
+
+  def get_random(self, size, random_path=None):
+    if random_path is not None:
+
+      #load data
+      train_labels = [0]*111 + [1]*70 +  [2]*70
+      test_labels = [0]*26 + [1]*20 + [2]*20
+
+      train_labels = to_categorical(train_labels)
+      test_labels =  to_categorical(test_labels)
+
+      # Get the data quantum pre-processed with random circuit
+      train_images = np.load(random_path + f"{self.prefix}_q_train_images.npy")
+      test_images = np.load(random_path + f"{self.prefix}_q_test_images.npy")
+
+      return train_images, train_labels, test_images, test_labels
+
 
   def get_data(self, size, pp):
     X_train, Y_train = [], []
@@ -201,7 +252,26 @@ class MALARIADB:
     self.shape = shape
     self.prefix = prefix 
 
-    print('prefix', self.prefix)
+  def get_random(self, size, random_path=None):
+    if random_path is not None:
+
+      train_images = np.zeros((7200, 50, 50, 4))
+      test_images = np.zeros((800, 50, 50, 4))
+
+      for i in range(1,5):
+        # Get the data quantum pre-processed with random circuit
+        _train = np.load(random_path + f"malaria{i}_q_train_images.npy")
+        _test = np.load(random_path + f"malaria{i}_q_test_images.npy")
+
+        train_images[1800*(i-1):1800*i,:,:] = _train
+        test_images[200*(i-1):200*i,:,:] = _test
+
+      #load data
+      train_labels =  [1]*(len(train_images)//2) + [0]*(len(train_images)//2)
+      test_labels =  [1]*(len(test_images)//2) + [0]*(len(test_images)//2)
+
+      return train_images, np.array(train_labels), test_images, np.array(test_labels)
+
 
   def get_data(self, size, pp):
     data = []
@@ -259,5 +329,3 @@ class MALARIADB:
     q_test_images = np.load(self.SAVE_PATH + f"{self.prefix}_q_test_images.npy")
 
     return q_train_images, Y_train, q_test_images, Y_test
-
-

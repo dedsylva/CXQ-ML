@@ -8,14 +8,14 @@ if __name__ == '__main__':
 
   # Constants
   MNIST_SHAPE = (28,28,1)
-  IMAGENET_SHAPE = (100,100,4)
-  COVID_SHAPE = (100,100,1)
+  IMAGENET_SHAPE = (100,100,1)
+  COVID_SHAPE = (250,250,1)
   MALARIA_SHAPE = (100, 100, 1)
-  OPT = 'rmsprop' #'adam'
+  OPT = 'adam'
   LOSS = 'categorical_crossentropy'
   METRICS = ['accuracy', 'AUC']
   BATCH = 32
-  EPOCHS = 5 
+  EPOCHS = 5 #20 
 
   RANDOM_LAYERS = 1    # Number of random layers
   SIZE = -1 
@@ -74,7 +74,7 @@ if MNIST:
   loss, acc, auc = model.evaluate(X_test, Y_test)
 
   time.sleep(1)
-  print(f'Accuracy of Neural Network: {acc}')
+  print(f'Accuracy: {acc}, AUC: {auc}')
 
 
 """ IMAGENET DATASET (ANTS AND BEES) """
@@ -100,10 +100,10 @@ if IMAGENET:
   time.sleep(1)
 
   print("Evaluating model ... ")
-  loss, acc = model.evaluate(X_test, Y_test)
+  loss, acc, auc = model.evaluate(X_test, Y_test)
 
   time.sleep(1)
-  print(f'Accuracy of Neural Network: {acc}')
+  print(f'Accuracy: {acc}, AUC: {auc}')
 
 
 """ COVID-19 DATASET  """

@@ -10,14 +10,14 @@ if __name__ == '__main__':
   # Constants
   MNIST_SHAPE = (28,28,4)
   IMAGENET_SHAPE = (100,100,4)
-  COVID_SHAPE = (100,100,1)
+  COVID_SHAPE = (250,250,1)
   MALARIA_SHAPE = (100, 100, 1)
-  OPT = 'rmsprop' #'adam'
+  OPT = 'adam'
   LOSS = 'categorical_crossentropy'
   METRICS = ['accuracy', 'AUC']
-  BATCH = 64
+  BATCH = 32
   PURE_BATCH = 16
-  EPOCHS = 5 
+  EPOCHS = 20 
 
   RANDOM_LAYERS = 1    # Number of random layers
   SIZE = -1 
@@ -27,8 +27,9 @@ if __name__ == '__main__':
   AVAILABLE_MODELS = ['MNIST', 'IMAGENET', 'COVID', 'MALARIA']
   AVAILABLE_TYPES = ['PURE', 'MIXED']
 
-  DEBUG = bool(int(os.environ.get('DEBUG').strip()))
-  PRINT = bool(int(os.environ.get('PRINT').strip()))
+  RANDOM = bool(int(os.environ.get('RANDOM').strip())) if os.environ.get('RANDOM') is not None else False
+  DEBUG = bool(int(os.environ.get('DEBUG').strip())) if os.environ.get('DEBUG') is not None else False
+  PRINT = bool(int(os.environ.get('PRINT').strip())) if os.environ.get('PRINT') is not None else False
   pp = os.environ.get('PREPROCESS').strip() if os.environ.get('PREPROCESS') is not None else '0'
 
   MODEL = os.environ.get('MODEL').strip()
@@ -66,7 +67,10 @@ if MNIST:
   SIZE = os.environ.get('SIZE')
   SIZE = -1 if SIZE is None else int(SIZE)
 
-  X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp, TYPE)
+  if RANDOM:
+    X_train, Y_train, X_test, Y_test = db.get_random(SIZE, random_path=r'quantum/scratch/quanvolution/Randoms/')
+  else:
+    X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp, TYPE)
 
   if TYPE == 'PURE':
     run(X_train, Y_train, X_test, Y_test, layers=1, batch=PURE_BATCH, categoric=True, Debug=DEBUG, PRINT=PRINT)
@@ -99,7 +103,12 @@ if IMAGENET:
   db = IMAGENETDB(SAVE_PATH, IMAGENET_SHAPE, prefix='imagenet')
   SIZE = os.environ.get('SIZE')
   SIZE = -1 if SIZE is None else int(SIZE)
-  X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
+
+  if RANDOM:
+    X_train, Y_train, X_test, Y_test = db.get_random(SIZE, random_path=r'quantum/scratch/quanvolution/Randoms/')
+  else:
+    X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
+
   X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
   X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
 
@@ -136,7 +145,11 @@ if COVID:
   db = COVIDB(SAVE_PATH, COVID_SHAPE, prefix='covid')
   SIZE = os.environ.get('SIZE')
   SIZE = -1 if SIZE is None else int(SIZE)
-  X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
+
+  if RANDOM:
+    X_train, Y_train, X_test, Y_test = db.get_random(SIZE, random_path=r'quantum/scratch/quanvolution/Randoms/')
+  else:
+    X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
 
   X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
   X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
@@ -184,7 +197,13 @@ if MALARIA:
   else:
     raise ValueError(f'SIZE takes up to 2 arguments, but got {SIZE}')
 
-  X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
+
+  if RANDOM:
+    X_train, Y_train, X_test, Y_test = db.get_random(SIZE, random_path=r'quantum/scratch/quanvolution/Randoms/')
+    X_train, Y_train = shuffle(X_train, Y_train, random_state=0)
+    X_test, Y_test= shuffle(X_test, Y_test, random_state=0)
+  else:
+    X_train, Y_train, X_test, Y_test = db.get_data(SIZE, pp)
 
   if TYPE == 'PURE':
     run(X_train, Y_train, X_test, Y_test, layers=1, batch=PURE_BATCH, categoric=False, Debug=DEBUG, PRINT=PRINT)

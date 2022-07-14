@@ -37,18 +37,12 @@ def circuit(phi ):
   for j in range(4):
     qml.RY(np.pi * phi[j], wires=j)
   
-  for l in range(5):
-    # layer(phi)
-    qml.Hadamard(0)
-    qml.Hadamard(2)
+  # layer(phi)
+  for i in range(4):
+    qml.Hadamard(i)
 
-    qml.CNOT(wires=[0,1])
-    qml.CNOT(wires=[2,3])
-
-    qml.Hadamard(1)
-    qml.Hadamard(3)
-
-
+  # qml.CNOT(wires=[0,1])
+  # qml.CNOT(wires=[2,3])
 
   # Random quantum circuit
   # RandomLayers(rand_params, wires=list(range(4)))

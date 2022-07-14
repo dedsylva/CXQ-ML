@@ -139,17 +139,18 @@ set MODEL=MNIST && python visual.py
 ```
 
 ## Flags (Environment Variables)
- - MODEL      [Mandatory]
-   - Trains the Model from the List: MNIST, IMAGENET, COVID, MALARIA
- - PRINT      [Optional] 
-   - Prints history of losses
- - TYPE       [Optional] - Only for quantum 
-   - If PURE, trains only with quantum operations, if MIXED (default) trains with 1st layer as quanvolutional and the rest with tensorflow/keras
-   - <strong>Pure Only working in MNIST for now </strong>
- - DEBUG      [Optional] 
-   - Shows shapes (only available in PURE type)
- - PREPROCESS [Optional] 
-   - Preprocess the dataset with the quanvolutional layer (necessary for MIXED type)
+- MODEL      [Mandatory][String]
+  - Trains the Model from the List: MNIST, IMAGENET, COVID, MALARIA
+- PRINT      [Optional][Integer] 
+  - Prints history of losses
+- TYPE       [Optional][String] - Only for quantum 
+  - If PURE, trains only with quantum operations, if MIXED (default) trains with 1st layer as quanvolutional and the rest with tensorflow/keras
+- DEBUG      [Optional][Integer] 
+  - Shows shapes (only available in PURE type)
+- RANDOM      [Optional][Integer] 
+  - Loads the random quantum pre-processing
+- PREPROCESS [Optional][Integer] 
+  - Preprocess the dataset with the quanvolutional layer (necessary for MIXED type)
 
 ## Objective
 

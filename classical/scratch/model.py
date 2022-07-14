@@ -39,12 +39,9 @@ class Mnist():
 		model = models.Sequential()
 		model.add(layers.Conv2D(32, (3,3), activation='relu', input_shape=self.input_shape))
 		model.add(layers.MaxPooling2D((2,2)))
-		# model.add(layers.Conv2D(64, (3,3), activation='relu'))
-		# model.add(layers.MaxPooling2D((2,2)))
 
 		#Classification part
 		model.add(layers.Flatten())
-		# model.add(layers.Dense(50, activation='relu'))
 		model.add(layers.Dense(10, activation='softmax'))
 
 		model.compile(optimizer=self.optimizer, loss=self.loss, metrics=self.metrics)
@@ -66,7 +63,7 @@ class Imagenet():
 	def __init__(self, input_shape, optimizer, loss, metrics):
 		self.input_shape = input_shape
 		self.optimizer = optimizer
-		self.loss = loss
+		self.loss = 'binary_crossentropy'
 		self.metrics = metrics
 
 	## Salvando a rede ##
@@ -85,14 +82,12 @@ class Imagenet():
 		model = models.Sequential()
 		model.add(layers.Conv2D(64, (3,3), activation='relu', input_shape=self.input_shape))
 		model.add(layers.MaxPooling2D((2,2)))
-		# model.add(layers.Conv2D(32, (3,3), activation='relu'))
-		# model.add(layers.MaxPooling2D((2,2)))
 
 		#Classification part
 		model.add(layers.Flatten())
-		# model.add(layers.Dense(128, activation='relu'))
-		model.add(layers.Dense(64, activation='relu'))
-		model.add(layers.Dense(16, activation='relu'))
+		model.add(layers.Dropout(0.3))
+		model.add(layers.Dense(32, activation='elu'))
+		model.add(layers.Dropout(0.5))
 		model.add(layers.Dense(1, activation='sigmoid'))
 
 		model.compile(optimizer=self.optimizer, loss=self.loss, metrics=self.metrics)
@@ -115,7 +110,7 @@ class Covid():
 	def __init__(self, input_shape, optimizer, loss, metrics):
 		self.input_shape = input_shape
 		self.optimizer = optimizer
-		self.loss = loss
+		self.loss = 'binary_crossentropy'
 		self.metrics = metrics
 
 	## Salvando a rede ##
@@ -139,9 +134,6 @@ class Covid():
 
 		#Classification part
 		model.add(layers.Flatten())
-		# model.add(layers.Dense(128, activation='relu'))
-		# model.add(layers.Dense(32, activation='relu'))
-		# model.add(layers.Dense(16, activation='relu'))
 		model.add(layers.Dense(3, activation='softmax'))
 
 		model.compile(optimizer=self.optimizer, loss=self.loss, metrics=self.metrics)
@@ -180,14 +172,14 @@ class Malaria():
 	def build_model(self, print_=True):
 		#CNN part
 		model = models.Sequential()
-		model.add(layers.Conv2D(64, (2,2), activation='relu', input_shape=self.input_shape))
-		model.add(layers.MaxPooling2D((2,2)))
-		model.add(layers.Conv2D(32, (2,2), activation='relu'))
+		model.add(layers.Conv2D(64, (3,3), activation='relu', input_shape=self.input_shape))
 		model.add(layers.MaxPooling2D((2,2)))
 
 		#Classification part
 		model.add(layers.Flatten())
-		model.add(layers.Dense(10, activation='relu',  kernel_regularizer=regularizers.L1L2(l2=1e-4),))
+		model.add(layers.Dropout(0.3))
+		model.add(layers.Dense(32, activation='elu'))
+		model.add(layers.Dropout(0.5))
 		model.add(layers.Dense(1, activation='sigmoid'))
 
 		model.compile(optimizer=self.optimizer, loss=self.loss, metrics=self.metrics)
