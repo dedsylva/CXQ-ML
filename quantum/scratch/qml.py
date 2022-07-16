@@ -10,7 +10,7 @@ if __name__ == '__main__':
   # Constants
   MNIST_SHAPE = (28,28,4)
   IMAGENET_SHAPE = (100,100,4)
-  COVID_SHAPE = (250,250,1)
+  COVID_SHAPE = (100,100,4)
   MALARIA_SHAPE = (100, 100, 1)
   OPT = 'adam'
   LOSS = 'categorical_crossentropy'
