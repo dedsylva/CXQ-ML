@@ -33,7 +33,7 @@ if __name__ == '__main__':
   pp = os.environ.get('PREPROCESS').strip() if os.environ.get('PREPROCESS') is not None else '0'
 
   MODEL = os.environ.get('MODEL').strip()
-  TYPE  = os.environ.get('TYPE').strip() if os.environ.get('TYPE') is not None else 'PURE'
+  TYPE  = os.environ.get('TYPE').strip() if os.environ.get('TYPE') is not None else 'MIXED'
   MNIST, IMAGENET, COVID, MALARIA = False, False, False, False
 
   if MODEL is None:
